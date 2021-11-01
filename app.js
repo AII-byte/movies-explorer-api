@@ -14,7 +14,7 @@ const { errors } = require('celebrate');
 
 const cookieParser = require('cookie-parser');
 
-const port = process.env.PORT;
+const { limiter, port, dbAddress } = require('./config/config');
 
 const errorsHandler = require('./errors/errors');
 
@@ -22,10 +22,11 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const rootRouter = require('./routes');
 
-mongoose.connect('mongodb://localhost:27017/moviesdb');
+mongoose.connect(dbAddress);
 
 app.use(express.json());
 app.use(helmet());
+app.use(limiter);
 app.use(cookieParser());
 
 app.use(errorsHandler);
