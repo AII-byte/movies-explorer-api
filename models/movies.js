@@ -10,7 +10,8 @@ const movieSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: 2,
-    maxlength: 30,
+    maxlength: 100,
+
   },
   duration: {
     type: Number,
@@ -19,52 +20,68 @@ const movieSchema = new mongoose.Schema({
   year: {
     type: Number,
     required: true,
+    length: 4,
   },
   description: {
     type: String,
     required: true,
+    maxlength: 2000,
   },
   image: {
     type: String,
     required: true,
-    // validate: {
-    //   validator: (link) => {
-    //     validator.isURL(link, { protocols: ['http', 'https'], require_protocol: true });
-    //   },
-    // },
+    validate: {
+      validator: (link) => {
+        if (!validator.isURL(link, { protocols: ['http', 'https'], require_protocol: true })) {
+          throw new Error({ error: 'Неверный формат ссылки на фотографию' });
+        }
+        return link;
+      },
+    },
   },
   trailer: {
     type: String,
     required: true,
-    // validate: {
-    //   validator: (link) => {
-    //     validator.isURL(link, { protocols: ['http', 'https'], require_protocol: true });
-    //   },
-    // },
+    validate: {
+      validator: (link) => {
+        if (!validator.isURL(link, { protocols: ['http', 'https'], require_protocol: true })) {
+          throw new Error({ error: 'Неверный формат ссылки на трейлер' });
+        }
+        return link;
+      },
+    },
   },
   thumbnail: {
     type: String,
     required: true,
-    // validate: {
-    //   validator: (link) => {
-    //     validator.isURL(link, { protocols: ['http', 'https'], require_protocol: true });
-    //   },
-    // },
+    validate: {
+      validator: (link) => {
+        if (!validator.isURL(link, { protocols: ['http', 'https'], require_protocol: true })) {
+          throw new Error({ error: 'Неверный формат ссылки на превью-фото фильма' });
+        }
+        return link;
+      },
+    },
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
     required: true,
   },
-  moveId: {
-    type: mongoose.Schema.Types.ObjectId,
+  movieId: {
+    type: String,
+    required: true,
+    unique: true,
   },
   nameRU: {
     type: String,
     required: true,
     validate: {
-      validator: (nameRU) => {
-        validator.isAlphanumeric(nameRU, 'ru-RU');
+      validator: (value) => {
+        if (validator.isAlphanumeric(value, 'ru-RU')) {
+          throw new Error({ error: 'Введите название фильма используя русские буквы' });
+        }
+        return value;
       },
     },
   },
@@ -72,8 +89,11 @@ const movieSchema = new mongoose.Schema({
     type: String,
     required: true,
     validate: {
-      validator: (nameEN) => {
-        validator.isAlphanumeric(nameEN, 'en-US');
+      validator: (value) => {
+        if (validator.isAlphanumeric(value, 'en-US')) {
+          throw new Error({ error: 'Введите название фильма используя английские буквы' });
+        }
+        return value;
       },
     },
   },

@@ -1,7 +1,7 @@
 const router = require('express').Router();
 
 const { validateCreateUser, validateLoginUser } = require('../middlewares/validations');
-const { createUser, login } = require('../controllers/users');
+const { createUser, login, logout } = require('../controllers/users');
 
 const userRouter = require('./users');
 const moviesRouter = require('./movies');
@@ -11,6 +11,7 @@ const auth = require('../middlewares/auth');
 router.post('/signup', validateCreateUser, createUser);
 router.post('/signin', validateLoginUser, login);
 router.use(auth);
+router.post('/signout', logout);
 router.use('/users', userRouter);
 router.use('/movies', moviesRouter);
 router.use('*', () => { throw new Error404('Запрашиваемый ресурс не найден.'); });

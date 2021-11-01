@@ -5,11 +5,6 @@ const bcrypt = require('bcrypt');
 const Error400 = require('../errors/error400');
 
 const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    minlength: 2,
-    maxlength: 30,
-  },
   email: {
     type: String,
     required: true,
@@ -25,6 +20,12 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     select: false,
+  },
+  name: {
+    type: String,
+    minlength: 2,
+    maxlength: 30,
+    required: true,
   },
 }, { versionKey: false });
 

@@ -10,8 +10,6 @@ dotenv.config();
 
 const helmet = require('helmet');
 
-// const cors = require('cors');
-
 const { errors } = require('celebrate');
 
 const cookieParser = require('cookie-parser');
@@ -24,7 +22,7 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const rootRouter = require('./routes');
 
-mongoose.connect('mongodb://localhost:27017/moviedb');
+mongoose.connect('mongodb://localhost:27017/moviesdb');
 
 app.use(express.json());
 app.use(helmet());
@@ -34,15 +32,7 @@ app.use(errorsHandler);
 app.use(requestLogger);
 app.use(express.json({ extended: true }));
 
-// app.use(cors({
-//   origin: ['http://aii.nomoredomains.club', 'https://aii.nomoredomains.club'],
-//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-//   allowedHeaders: ['Content-Type', 'Authorization'],
-//   credentials: true,
-// }));
-
-app.use('/', rootRouter); // Храним все роутеры
-
+app.use('/', rootRouter);
 app.use(errorLogger);
 
 app.use(errors());

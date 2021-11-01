@@ -14,12 +14,12 @@ const { JWT_SECRET = 'secret' } = process.env;
 
 const createUser = (req, res, next) => {
   const {
-    name, email, password,
+    email, password, name,
   } = req.body;
 
   bcrypt.hash(password, 10)
     .then((hash) => User.create({
-      name, email, password: hash,
+      email, password: hash, name,
     }))
     .then((user) => {
       res.send(user);
@@ -45,11 +45,15 @@ const login = (req, res, next) => {
         httpOnly: true,
         sameSite: 'None',
         secure: true,
-      }).end(res.send({ message: 'Пользователь залогинен' }));
+      }).send({ message: 'Пользователь залогинен' });
     })
     .catch(() => next(new Error401('Пароль или email введен неверно')));
 };
 
+const logout = (req, res, next) => {
+  res.clearCookie('jwt').send({ message: 'Выход произведён успешно: куки удалены' });
+  next();
+};
 const getCurrentUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
@@ -69,11 +73,11 @@ const getCurrentUser = (req, res, next) => {
 
 const updateUser = (req, res, next) => {
   const userId = req.user._id;
-  const { name } = req.body;
+  const { name, email } = req.body;
   User.findByIdAndUpdate(
     userId,
     {
-      name,
+      name, email,
     },
     {
       new: true,
@@ -99,6 +103,7 @@ const updateUser = (req, res, next) => {
 
 module.exports = {
   login,
+  logout,
   createUser,
   updateUser,
   getCurrentUser,

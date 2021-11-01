@@ -25,18 +25,37 @@ const getUserMovie = (req, res, next) => {
 
 const createUserMovie = (req, res, next) => {
   const {
-    name,
-    link,
+    country,
+    director,
+    duration,
+    year,
+    description,
+    image,
+    trailer,
+    thumbnail,
+    movieId,
+    nameRU,
+    nameEN,
   } = req.body;
   Movie.create({
-    name,
-    link,
+    country,
+    director,
+    duration,
+    year,
+    description,
+    image,
+    trailer,
+    thumbnail,
     owner: req.user._id,
+    movieId,
+    nameRU,
+    nameEN,
   })
     .then((movie) => {
       res.status(200).send(movie);
     })
     .catch((err) => {
+      console.log(err);
       if (err.name === 'ValidationError') {
         next(new Error400('Переданы некорректные данные при создании карточки.'));
       } else {
@@ -66,59 +85,8 @@ const deleteUserMovie = (req, res, next) => {
     });
 };
 
-/* const likeMovie = (req, res, next) => {
-  Movie.findByIdAndUpdate(
-    req.params.movieId,
-    {
-      $addToSet: { likes: req.user._id },
-    },
-    { new: true },
-  )
-    .then((movie) => {
-      if (!movie) {
-        next(new Error404('Карточка с указанным ID не найдена.'));
-        return;
-      }
-      res.send(movie);
-    })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        next(new Error400('Переданы некорректные данные при лайке карточки.'));
-      } else {
-        next(new Error500('Запрашиваемый ресурс не найден.'));
-      }
-    });
-};
-
-const dislikeMovie = (req, res, next) => {
-  Movie.findByIdAndUpdate(
-    req.params.movieId,
-    {
-      $pull: { likes: req.user._id },
-    },
-    { new: true },
-  )
-    .then((movie) => {
-      if (!movie) {
-        next(new Error404('Карточка с указанным ID не найдена.'));
-      } else {
-        res.send(movie);
-      }
-    })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        next(new Error400('Переданы некорректные данные при лайке карточки.'));
-      } else {
-        next(new Error500('Запрашиваемый ресурс не найден.'));
-      }
-    });
-};
-*/
-
 module.exports = {
   getUserMovie,
   createUserMovie,
   deleteUserMovie,
-//  likeMovie,
-//   dislikeMovie,
 };
