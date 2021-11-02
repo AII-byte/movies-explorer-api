@@ -42,9 +42,9 @@ const login = (req, res, next) => {
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'secret', { expiresIn: '7d' });
       res.cookie('jwt', token, {
-        httpOnly: true,
-        sameSite: 'None',
-        secure: true,
+        // httpOnly: true,
+        // sameSite: 'None',
+        // secure: true,
       }).send({ message: 'Пользователь залогинен' });
     })
     .catch(() => next(new Error401('Пароль или email введен неверно')));
