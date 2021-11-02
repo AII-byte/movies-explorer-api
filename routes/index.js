@@ -2,6 +2,7 @@ const router = require('express').Router();
 
 const { validateCreateUser, validateLoginUser } = require('../middlewares/validations');
 const { createUser, login, logout } = require('../controllers/users');
+const pageCannotFound = require('../errors/messages');
 
 const userRouter = require('./users');
 const moviesRouter = require('./movies');
@@ -14,6 +15,6 @@ router.use(auth);
 router.post('/signout', logout);
 router.use('/users', userRouter);
 router.use('/movies', moviesRouter);
-router.use('*', () => { throw new Error404('Запрашиваемый ресурс не найден.'); });
+router.use('*', () => { throw new Error404(pageCannotFound); });
 
 module.exports = router;

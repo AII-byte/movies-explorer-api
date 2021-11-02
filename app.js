@@ -1,12 +1,12 @@
+const dotenv = require('dotenv');
+
+dotenv.config();
+
 const express = require('express');
 
 const app = express();
 
 const mongoose = require('mongoose');
-
-const dotenv = require('dotenv');
-
-dotenv.config();
 
 const helmet = require('helmet');
 
@@ -14,11 +14,11 @@ const { errors } = require('celebrate');
 
 const cookieParser = require('cookie-parser');
 
-const { limiter, port, dbAddress } = require('./config/config');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const errorsHandler = require('./errors/errors');
 
-const { requestLogger, errorLogger } = require('./middlewares/logger');
+const { limiter, port, dbAddress } = require('./config/config');
 
 const rootRouter = require('./routes');
 
@@ -26,28 +26,17 @@ mongoose.connect(dbAddress);
 
 app.use(express.json());
 app.use(helmet());
-app.use(limiter);
 app.use(cookieParser());
 
-app.use(errorsHandler);
 app.use(requestLogger);
+app.use(limiter);
 app.use(express.json({ extended: true }));
 
 app.use('/', rootRouter);
 app.use(errorLogger);
 
 app.use(errors());
-app.use((err, req, res, next) => {
-  const { statusCode = 500, message } = err;
-  res
-    .status(statusCode)
-    .send({
-      message: statusCode === 500
-        ? 'На сервере произошла ошибка'
-        : message,
-    });
-  next();
-});
+app.use(errorsHandler);
 
 app.listen(port, () => {
   console.log(`Ура! Заработало! Порт:${port}`);

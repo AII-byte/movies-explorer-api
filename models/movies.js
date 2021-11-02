@@ -69,7 +69,7 @@ const movieSchema = new mongoose.Schema({
     required: true,
   },
   movieId: {
-    type: Number,
+    type: String,
     required: true,
     unique: true,
   },
@@ -77,11 +77,10 @@ const movieSchema = new mongoose.Schema({
     type: String,
     required: true,
     validate: {
-      validator: (value) => {
-        if (validator.isAlphanumeric(value, 'ru-RU')) {
+      validator: () => {
+        if (validator.isAlphanumeric('ru-RU')) {
           throw new Error({ error: 'Введите название фильма используя русские буквы' });
         }
-        return value;
       },
     },
   },
@@ -89,11 +88,10 @@ const movieSchema = new mongoose.Schema({
     type: String,
     required: true,
     validate: {
-      validator: (value) => {
-        if (validator.isAlphanumeric(value, 'en-US')) {
+      validator: () => {
+        if (validator.isAlphanumeric('en-US')) {
           throw new Error({ error: 'Введите название фильма используя английские буквы' });
         }
-        return value;
       },
     },
   },

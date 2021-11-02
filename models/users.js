@@ -3,6 +3,10 @@ const validator = require('validator');
 const bcrypt = require('bcrypt');
 
 const Error400 = require('../errors/error400');
+const {
+  userLoginError,
+  userEmailIncorrect,
+} = require('../errors/messages');
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -12,7 +16,7 @@ const userSchema = new mongoose.Schema({
     lowercase: true,
     validate: (value) => {
       if (!validator.isEmail(value, { require_protocol: true })) {
-        throw new Error({ error: 'Неверный формат email адреса' });
+        throw new Error({ error: userEmailIncorrect });
       }
     },
   },
@@ -41,12 +45,12 @@ userSchema.statics.findUserByCredentials = function (email, password) {
   return this.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        return Promise.reject(new Error400('Пароль или email указаны неверно.'));
+        return Promise.reject(new Error400(userLoginError));
       }
       return bcrypt.compare(password, user.password)
         .then((matched) => {
           if (!matched) {
-            return Promise.reject(new Error400('Пароль или email указаны неверно.'));
+            return Promise.reject(new Error400(userLoginError));
           }
           return user;
         });

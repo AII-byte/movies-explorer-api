@@ -1,9 +1,14 @@
+const { serverError } = require('./messages');
+
 const errorsHandler = (err, req, res, next) => {
-  const status = err.statusCode;
-  const { message } = err.message;
-
-  res.status(status).send({ message });
-
+  const { statusCode = 500, message } = err;
+  res
+    .status(statusCode)
+    .send({
+      message: statusCode === 500
+        ? serverError
+        : message,
+    });
   next();
 };
 

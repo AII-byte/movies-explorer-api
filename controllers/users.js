@@ -1,16 +1,25 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+
+const { jwtSecret } = require('../config/config');
+
 const User = require('../models/users');
 
 const Error400 = require('../errors/error400');
 const Error401 = require('../errors/error401');
 const Error404 = require('../errors/error404');
 const Error409 = require('../errors/error409');
-const Error500 = require('../errors/error500');
 
-const { NODE_ENV } = process.env;
-
-const { JWT_SECRET = 'secret' } = process.env;
+const {
+  userLogin,
+  userLogout,
+  userCreateIncorrectData,
+  userEmailConflict,
+  userLoginError,
+  userCannotFoundViaId,
+  userIncorrectUpdateInfo,
+  cookieDelete,
+} = require('../errors/messages');
 
 const createUser = (req, res, next) => {
   const {
@@ -25,14 +34,15 @@ const createUser = (req, res, next) => {
       res.send(user);
     })
     .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') {
-        next(new Error400('Переданы некорректные данные при создании пользователя.'));
+      if (err.name === 'ValidationError') {
+        next(new Error400(userCreateIncorrectData));
       }
       if (err.code === 11000) {
-        next(new Error409('Пользователь с данным email уже зарегистрирован'));
+        next(new Error409(userEmailConflict));
       }
       next(err);
-    });
+    })
+    .catch((err) => next(err));
 };
 
 const login = (req, res, next) => {
@@ -40,31 +50,26 @@ const login = (req, res, next) => {
 
   User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'secret', { expiresIn: '7d' });
+      const token = jwt.sign({ _id: user._id }, jwtSecret, { expiresIn: '7d' });
       res.cookie('jwt', token, {
-        // httpOnly: true,
-        // sameSite: 'None',
-        // secure: true,
-      }).send({ message: 'Пользователь залогинен' });
+        httpOnly: true,
+        sameSite: 'None',
+        secure: true,
+      }).send({ message: userLogin });
     })
-    .catch(() => next(new Error401('Пароль или email введен неверно')));
+    .catch(() => next(new Error401(userLoginError)));
 };
 
 const getCurrentUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
       if (!user) {
-        next(new Error404('Пользователь с указанным ID не найден.'));
+        next(new Error404(userCannotFoundViaId));
       } else {
         res.status(200).send(user);
       }
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        next(new Error400('Переданы некорректные данные при запросе данных пользователя.'));
-      }
-      return next(new Error500('Запрашиваемый ресурс не найден.'));
-    });
+    .catch((err) => next(err));
 };
 
 const updateUser = (req, res, next) => {
@@ -83,22 +88,23 @@ const updateUser = (req, res, next) => {
   )
     .then((user) => {
       if (!user) {
-        throw new Error404('Пользователь с указанным ID не найден.');
+        throw new Error404(userCannotFoundViaId);
       } else {
         res.status(200).send(user);
       }
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
-        next(new Error400('Переданы некорректные данные при обновлении информации о пользователе.'));
+        next(new Error400(userIncorrectUpdateInfo));
       } else {
-        next(new Error500({ err }));
+        next(new Error409(userEmailConflict));
       }
-    });
+    })
+    .catch((err) => next(err));
 };
 
 const logout = (req, res, next) => {
-  res.clearCookie('jwt').send({ message: 'Выход произведён успешно: куки удалены' });
+  res.clearCookie('jwt').send({ message: `${userLogout}. ${cookieDelete}` });
   next();
 };
 
