@@ -27,11 +27,11 @@ const createUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
         next(new Error400('Переданы некорректные данные при создании пользователя.'));
-      } else if (err.name === 'MongoError' && err.code === 11000) {
-        next(new Error409('Пользователь с данным email уже зарегистрирован'));
-      } else {
-        next(err);
       }
+      if (err.code === 11000) {
+        next(new Error409('Пользователь с данным email уже зарегистрирован'));
+      }
+      next(err);
     });
 };
 
@@ -50,10 +50,6 @@ const login = (req, res, next) => {
     .catch(() => next(new Error401('Пароль или email введен неверно')));
 };
 
-const logout = (req, res, next) => {
-  res.clearCookie('jwt').send({ message: 'Выход произведён успешно: куки удалены' });
-  next();
-};
 const getCurrentUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
@@ -99,6 +95,11 @@ const updateUser = (req, res, next) => {
         next(new Error500({ err }));
       }
     });
+};
+
+const logout = (req, res, next) => {
+  res.clearCookie('jwt').send({ message: 'Выход произведён успешно: куки удалены' });
+  next();
 };
 
 module.exports = {
