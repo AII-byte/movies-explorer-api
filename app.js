@@ -4,6 +4,7 @@ dotenv.config();
 
 const express = require('express');
 
+const { PORT = 3000 } = process.env;
 const app = express();
 
 const mongoose = require('mongoose');
@@ -38,6 +39,6 @@ app.use(errorLogger);
 app.use(errors());
 app.use(errorsHandler);
 
-app.listen(port, () => {
-  console.log(`Ура! Заработало! Порт:${port}`);
+app.listen(PORT, () => {
+  console.log(`Ура! Заработало! Порт:${PORT}`);
 });
