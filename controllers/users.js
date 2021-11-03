@@ -52,9 +52,9 @@ const login = (req, res, next) => {
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, jwtSecret, { expiresIn: '7d' });
       res.cookie('jwt', token, {
-        // httpOnly: true,
-        // sameSite: 'None',
-        // secure: true,
+        httpOnly: true,
+        sameSite: 'None',
+        secure: true,
       }).send({ message: userLogin });
     })
     .catch(() => next(new Error401(userLoginError)));
