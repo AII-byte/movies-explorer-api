@@ -1,5 +1,12 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const {
+  movieInvalidPhotoLink,
+  movieInvalidTrailerLink,
+  movieInvalidthumbnailLink,
+  validatorCheckLangRu,
+  validatorCheckLangEng,
+} = require('../errors/messages');
 
 const movieSchema = new mongoose.Schema({
   country: {
@@ -33,7 +40,7 @@ const movieSchema = new mongoose.Schema({
     validate: {
       validator: (link) => {
         if (!validator.isURL(link, { protocols: ['http', 'https'], require_protocol: true })) {
-          throw new Error({ error: 'Неверный формат ссылки на фотографию' });
+          throw new Error(movieInvalidPhotoLink);
         }
         return link;
       },
@@ -45,7 +52,7 @@ const movieSchema = new mongoose.Schema({
     validate: {
       validator: (link) => {
         if (!validator.isURL(link, { protocols: ['http', 'https'], require_protocol: true })) {
-          throw new Error({ error: 'Неверный формат ссылки на трейлер' });
+          throw new Error(movieInvalidTrailerLink);
         }
         return link;
       },
@@ -57,7 +64,7 @@ const movieSchema = new mongoose.Schema({
     validate: {
       validator: (link) => {
         if (!validator.isURL(link, { protocols: ['http', 'https'], require_protocol: true })) {
-          throw new Error({ error: 'Неверный формат ссылки на превью-фото фильма' });
+          throw new Error(movieInvalidthumbnailLink);
         }
         return link;
       },
@@ -69,7 +76,7 @@ const movieSchema = new mongoose.Schema({
     required: true,
   },
   movieId: {
-    type: String,
+    type: Number,
     required: true,
     unique: true,
   },
@@ -77,9 +84,9 @@ const movieSchema = new mongoose.Schema({
     type: String,
     required: true,
     validate: {
-      validator: () => {
-        if (validator.isAlphanumeric('ru-RU')) {
-          throw new Error({ error: 'Введите название фильма используя русские буквы' });
+      validator: (value) => {
+        if (!validator.isAlphanumeric(value, 'ru-RU', { ignore: ' .,!?@#$%@&*"' })) {
+          throw new Error(validatorCheckLangRu);
         }
       },
     },
@@ -88,9 +95,9 @@ const movieSchema = new mongoose.Schema({
     type: String,
     required: true,
     validate: {
-      validator: () => {
-        if (validator.isAlphanumeric('en-US')) {
-          throw new Error({ error: 'Введите название фильма используя английские буквы' });
+      validator: (value) => {
+        if (!validator.isAlphanumeric(value, 'en-US', { ignore: ' .,!?@#$%@&*"' })) {
+          throw new Error(validatorCheckLangEng);
         }
       },
     },

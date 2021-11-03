@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 const { jwtSecret } = require('../config/config');
 
 const Error401 = require('../errors/error401');
-const authorizationError = require('../errors/messages');
 
 function auth(req, res, next) {
   const token = req.cookies.jwt;
@@ -12,7 +11,7 @@ function auth(req, res, next) {
   try {
     payload = jwt.verify(token, jwtSecret);
   } catch (err) {
-    throw new Error401(authorizationError);
+    throw new Error401('Необходима авторизация');
   }
 
   req.user = payload;

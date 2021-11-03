@@ -11,7 +11,7 @@ const {
   movieCreationIncorrectData,
   movieIdConflict,
   movieProhibitedDelete,
-  movieDeleteIncorrectData,
+  // movieDeleteIncorrectData,
 } = require('../errors/messages');
 
 const getUserMovie = (req, res, next) => {
@@ -84,19 +84,17 @@ const deleteUserMovie = (req, res, next) => {
         movie.remove(movie._id)
           .then((deletedMovie) => {
             res.send(deletedMovie);
-          });
+          })
+          .catch((err) => next(err));
       } else {
         next(new Error403(movieProhibitedDelete));
       }
     })
     .catch(() => {
       if (!Movie) {
-        next(new Error400(movieDeleteIncorrectData));
-      } else {
         next(new Error404(movieCannotFoundViaId));
       }
-    })
-    .catch((err) => next(err));
+    });
 };
 
 module.exports = {
