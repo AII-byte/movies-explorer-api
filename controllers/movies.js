@@ -11,7 +11,6 @@ const {
   movieCreationIncorrectData,
   movieIdConflict,
   movieProhibitedDelete,
-  // movieDeleteIncorrectData,
 } = require('../errors/messages');
 
 const getUserMovie = (req, res, next) => {

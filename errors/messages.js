@@ -1,4 +1,5 @@
 module.exports = {
+  authorizationError: 'Авторизация не прошла',
   movieCannotFoundViaId: 'Фильм с указанным ID не найден',
   movieIncorrectData: 'Переданы некорректные данные при запросе фильма',
   movieCreationIncorrectData: 'Переданы некорректные данные при создании фильма',
@@ -18,7 +19,6 @@ module.exports = {
   userIncorrectUpdateInfo: 'Переданы некорректные данные при обновлении информации о пользователе',
   cookieDelete: 'Cookie успешно удалены',
   serverError: 'На сервере произошла ошибка',
-  authorizationError: 'Авторизация не прошла',
   urlIncorrect: 'Неверный формат ссылки',
   validatorCheckLangRu: 'Введите название фильма используя русские буквы',
   validatorCheckLangEng: 'Введите название фильма используя английские буквы',

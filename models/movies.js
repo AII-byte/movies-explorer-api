@@ -88,6 +88,7 @@ const movieSchema = new mongoose.Schema({
         if (!validator.isAlphanumeric(value, 'ru-RU', { ignore: ' .,!?@#$%@&*"' })) {
           throw new Error(validatorCheckLangRu);
         }
+        return value;
       },
     },
   },
@@ -99,6 +100,7 @@ const movieSchema = new mongoose.Schema({
         if (!validator.isAlphanumeric(value, 'en-US', { ignore: ' .,!?@#$%@&*"' })) {
           throw new Error(validatorCheckLangEng);
         }
+        return value;
       },
     },
   },
