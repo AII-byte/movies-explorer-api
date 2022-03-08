@@ -8,6 +8,7 @@ const { authorizationError } = require('../errors/messages');
 function auth(req, res, next) {
   const token = req.cookies.jwt;
   let payload;
+
   try {
     payload = jwt.verify(token, jwtSecret);
   } catch (err) {

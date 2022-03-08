@@ -50,14 +50,31 @@ const login = (req, res, next) => {
 
   User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, jwtSecret, { expiresIn: '7d' });
-      res.cookie('jwt', token, {
-        httpOnly: true,
-        sameSite: 'None',
-        secure: true,
-      }).send({ message: userLogin });
+      const token = jwt.sign({ _id: user._id }, jwtSecret, { expiresIn: '1d' });
+      return res
+        .cookie('jwt', token, {
+          httpOnly: true,
+          sameSite: true,
+          secure: true,
+        }).send({ message: userLogin });
     })
     .catch(() => next(new Error401(userLoginError)));
+};
+
+const logout = (req, res) => {
+  if (!req.cookies.jwt) {
+    console.log('Некого разлогинивать');
+  }
+
+  const token = req.cookies.jwt;
+
+  return res
+    // .clearCookie('jwt', token)
+    .cookie('jwt', token, {
+      maxAge: 0,
+    })
+    .status(200)
+    .send({ message: `${userLogout}. ${cookieDelete}` });
 };
 
 const getCurrentUser = (req, res, next) => {
@@ -101,11 +118,6 @@ const updateUser = (req, res, next) => {
       }
     })
     .catch((err) => next(err));
-};
-
-const logout = (req, res, next) => {
-  res.clearCookie('jwt').send({ message: `${userLogout}. ${cookieDelete}` });
-  next();
 };
 
 module.exports = {

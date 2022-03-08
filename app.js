@@ -10,6 +10,8 @@ const mongoose = require('mongoose');
 
 const helmet = require('helmet');
 
+const cors = require('cors');
+
 const { errors } = require('celebrate');
 
 const cookieParser = require('cookie-parser');
@@ -31,6 +33,13 @@ app.use(cookieParser());
 app.use(requestLogger);
 app.use(limiter);
 app.use(express.json({ extended: true }));
+
+app.use(cors({
+  origin: ['http://localhost:3000', 'https://localhost:3000'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+}));
 
 app.use('/', rootRouter);
 app.use(errorLogger);

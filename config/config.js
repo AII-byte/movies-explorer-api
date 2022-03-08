@@ -1,3 +1,4 @@
+require('dotenv').config();
 const rateLimit = require('express-rate-limit');
 
 const { NODE_ENV, DB_ADDRESS, JWT_SECRET } = process.env;
