@@ -36,17 +36,15 @@ app.use(express.json({ extended: true }));
 
 const corsOptions = {
   origin: [
-    'http://51.250.20.199',
+    'http://51.250.7.8',
     'http://localhost:3000',
-    'https://localhost:3000',
     'http://localhost:3001',
-    'https://localhost:3001',
-    'https://aii.nomoredomains.work',
-    'http://aii.nomoredomains.work',
-    'https://api.aii.nomoredomains.work',
-    'http://api.aii.nomoredomains.work',
+    'https://aii.nomoredomains.work/',
+    'https://api.aii.nomoredomains.work/',
+    'http://aii.nomoredomains.work/',
+    'http://api.aii.nomoredomains.work/',
   ],
-  // methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   // allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
 };
