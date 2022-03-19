@@ -17,6 +17,7 @@ module.exports = {
   userLoginError: 'Пароль или email введен неверно',
   userCannotFoundViaId: 'Пользователь с указанным ID не найден',
   userIncorrectUpdateInfo: 'Переданы некорректные данные при обновлении информации о пользователе',
+  userIncorrectRequest: 'Неверный запрос или данные',
   cookieDelete: 'Cookie успешно удалены',
   serverError: 'На сервере произошла ошибка',
   urlIncorrect: 'Неверный формат ссылки',

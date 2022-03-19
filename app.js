@@ -34,13 +34,19 @@ app.use(requestLogger);
 app.use(limiter);
 app.use(express.json({ extended: true }));
 
-app.use(cors({
-  origin: ['http://localhost:3000', 'https://localhost:3000'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+const corsOptions = {
+  origin: [
+    'http://localhost:3000',
+    'https://localhost:3000',
+    'http://localhost:3001',
+    'https://localhost:3001',
+  ],
+  // methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  // allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
-}));
+};
 
+app.use(cors(corsOptions));
 app.use('/', rootRouter);
 app.use(errorLogger);
 

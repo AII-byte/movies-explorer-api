@@ -4,8 +4,6 @@ const {
   movieInvalidPhotoLink,
   movieInvalidTrailerLink,
   movieInvalidthumbnailLink,
-  validatorCheckLangRu,
-  validatorCheckLangEng,
 } = require('../errors/messages');
 
 const movieSchema = new mongoose.Schema({
@@ -83,26 +81,10 @@ const movieSchema = new mongoose.Schema({
   nameRU: {
     type: String,
     required: true,
-    validate: {
-      validator: (value) => {
-        if (!validator.isAlphanumeric(value, 'ru-RU', { ignore: ' .,!?@#$%@&*"' })) {
-          throw new Error(validatorCheckLangRu);
-        }
-        return value;
-      },
-    },
   },
   nameEN: {
     type: String,
     required: true,
-    validate: {
-      validator: (value) => {
-        if (!validator.isAlphanumeric(value, 'en-US', { ignore: ' .,!?@#$%@&*"' })) {
-          throw new Error(validatorCheckLangEng);
-        }
-        return value;
-      },
-    },
   },
 }, { versionKey: false });
 

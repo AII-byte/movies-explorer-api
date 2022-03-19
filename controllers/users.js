@@ -11,15 +11,24 @@ const Error404 = require('../errors/error404');
 const Error409 = require('../errors/error409');
 
 const {
-  userLogin,
-  userLogout,
   userCreateIncorrectData,
   userEmailConflict,
   userLoginError,
   userCannotFoundViaId,
   userIncorrectUpdateInfo,
-  cookieDelete,
+  userIncorrectRequest,
 } = require('../errors/messages');
+
+const getCurrentUser = (req, res, next) => User.findById(req.user._id)
+  .orFail(new Error404(userCannotFoundViaId))
+  .then((user) => res.status(200).send(user))
+  .catch((err) => {
+    if (err.name === 'CastError') {
+      next(new Error400(userIncorrectRequest));
+    } else {
+      next(err);
+    }
+  });
 
 const createUser = (req, res, next) => {
   const {
@@ -41,50 +50,6 @@ const createUser = (req, res, next) => {
         next(new Error409(userEmailConflict));
       }
       next(err);
-    })
-    .catch((err) => next(err));
-};
-
-const login = (req, res, next) => {
-  const { email, password } = req.body;
-
-  User.findUserByCredentials(email, password)
-    .then((user) => {
-      const token = jwt.sign({ _id: user._id }, jwtSecret, { expiresIn: '1d' });
-      return res
-        .cookie('jwt', token, {
-          httpOnly: true,
-          sameSite: true,
-          secure: true,
-        }).send({ message: userLogin });
-    })
-    .catch(() => next(new Error401(userLoginError)));
-};
-
-const logout = (req, res) => {
-  if (!req.cookies.jwt) {
-    console.log('Некого разлогинивать');
-  }
-
-  const token = req.cookies.jwt;
-
-  return res
-    // .clearCookie('jwt', token)
-    .cookie('jwt', token, {
-      maxAge: 0,
-    })
-    .status(200)
-    .send({ message: `${userLogout}. ${cookieDelete}` });
-};
-
-const getCurrentUser = (req, res, next) => {
-  User.findById(req.user._id)
-    .then((user) => {
-      if (!user) {
-        next(new Error404(userCannotFoundViaId));
-      } else {
-        res.status(200).send(user);
-      }
     })
     .catch((err) => next(err));
 };
@@ -120,9 +85,20 @@ const updateUser = (req, res, next) => {
     .catch((err) => next(err));
 };
 
+const login = (req, res, next) => {
+  const { email, password } = req.body;
+
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, jwtSecret, { expiresIn: '7d' });
+      res
+        .status(200).send({ token });
+    })
+    .catch(() => next(new Error401(userLoginError)));
+};
+
 module.exports = {
   login,
-  logout,
   createUser,
   updateUser,
   getCurrentUser,

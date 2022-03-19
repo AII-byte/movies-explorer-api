@@ -1,5 +1,5 @@
 const { celebrate, Joi } = require('celebrate');
-const { checkURL, checkLangRu, checkLangEng } = require('./validatorCheck');
+const { checkURL } = require('./validatorCheck');
 
 const validateCreateUser = celebrate({
   body: Joi.object().keys({
@@ -34,8 +34,8 @@ const validateCreateMovie = celebrate({
     trailer: Joi.string().custom(checkURL).required(),
     thumbnail: Joi.string().custom(checkURL).required(),
     movieId: Joi.number().integer().required(),
-    nameRU: Joi.string().custom(checkLangRu).required(),
-    nameEN: Joi.string().custom(checkLangEng).required(),
+    nameRU: Joi.string().required(),
+    nameEN: Joi.string().required(),
   }),
 });
 
