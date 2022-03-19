@@ -44,9 +44,10 @@ const corsOptions = {
     'http://aii.nomoredomains.work/',
     'http://api.aii.nomoredomains.work/',
   ],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  // methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   // allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
+  headers: ['Access-Control-Allow-Headers : Content-Type'],
 };
 
 app.use(cors(corsOptions));
