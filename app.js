@@ -51,7 +51,7 @@ app.use(express.json({ extended: true }));
 // };
 
 app.use(cors({
-  origin: ['http://aii.nomoredomains.club', 'https://aii.nomoredomains.club'],
+  origin: ['http://aii.nomoredomains.work', 'https://aii.nomoredomains.work'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
