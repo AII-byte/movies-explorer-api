@@ -39,6 +39,7 @@ app.use(cors({
     'http://aii.nomoredomains.work',
     'https://aii.nomoredomains.work',
     'http://localhost:3000',
+    'https://localhost:3000',
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],

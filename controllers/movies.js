@@ -14,7 +14,9 @@ const {
 } = require('../errors/messages');
 
 const getUserMovie = (req, res, next) => {
-  Movie.find({})
+  const owner = req.user._id;
+
+  Movie.find({ owner })
     .then((movie) => {
       if (!movie) {
         next(new Error404(movieCannotFoundViaId));

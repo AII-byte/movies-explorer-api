@@ -18,6 +18,7 @@ const {
   userCannotFoundViaId,
   userIncorrectUpdateInfo,
   userIncorrectRequest,
+  serverError,
 } = require('../errors/messages');
 
 const getCurrentUser = (req, res, next) => User.findById(req.user._id)
