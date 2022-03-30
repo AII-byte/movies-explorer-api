@@ -8,6 +8,8 @@ const app = express();
 
 const mongoose = require('mongoose');
 
+const cors = require('cors');
+
 const helmet = require('helmet');
 
 const cookieParser = require('cookie-parser');
@@ -22,8 +24,6 @@ const { limiter, port, dbAddress } = require('./config/config');
 
 const rootRouter = require('./routes');
 
-const cors = require('./middlewares/cors');
-
 mongoose.connect(dbAddress);
 
 app.use(express.json());
@@ -34,14 +34,12 @@ app.use(requestLogger);
 app.use(limiter);
 app.use(express.json({ extended: true }));
 
-app.use(cors);
-
-// app.use(cors({
-//   origin: ['http://aii.nomoredomains.work', 'https://aii.nomoredomains.work', 'http://localhost:3000'],
-//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-//   allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
-//   credentials: true,
-// }));
+app.use(cors({
+  origin: ['http://aii.nomoredomains.work', 'https://aii.nomoredomains.work', 'http://localhost:3000'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+  credentials: true,
+}));
 
 app.use('/', rootRouter);
 app.use(errorLogger);
