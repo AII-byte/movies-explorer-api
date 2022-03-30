@@ -104,8 +104,13 @@ const login = (req, res, next) => {
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, jwtSecret, { expiresIn: '7d' });
-      res
-        .status(200).send({ token });
+      res.cookie('jwt', token, {
+        httpOnly: true,
+        sameSite: 'None',
+        secure: true,
+      }).send({ message: 'Пользователь залогинен' });
+      // res
+      //   .status(200).send({ token });
     })
     .catch(() => next(new Error401(userLoginError)));
 };
