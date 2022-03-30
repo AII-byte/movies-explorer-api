@@ -10,11 +10,9 @@ const mongoose = require('mongoose');
 
 const helmet = require('helmet');
 
-const cors = require('cors');
+const cookieParser = require('cookie-parser');
 
 const { errors } = require('celebrate');
-
-const cookieParser = require('cookie-parser');
 
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
@@ -23,6 +21,8 @@ const errorsHandler = require('./errors/errors');
 const { limiter, port, dbAddress } = require('./config/config');
 
 const rootRouter = require('./routes');
+
+const cors = require('./middlewares/cors');
 
 mongoose.connect(dbAddress);
 
@@ -34,12 +34,14 @@ app.use(requestLogger);
 app.use(limiter);
 app.use(express.json({ extended: true }));
 
-app.use(cors({
-  origin: ['http://aii.nomoredomains.work', 'https://aii.nomoredomains.work', 'http://localhost:3000'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
-  credentials: true,
-}));
+app.use(cors);
+
+// app.use(cors({
+//   origin: ['http://aii.nomoredomains.work', 'https://aii.nomoredomains.work', 'http://localhost:3000'],
+//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+//   allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+//   credentials: true,
+// }));
 
 app.use('/', rootRouter);
 app.use(errorLogger);
